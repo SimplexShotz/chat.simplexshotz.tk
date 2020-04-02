@@ -2,32 +2,277 @@
 <html>
   <head>
     <title>ReChat</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap">
+    <link rel="icon" href="resources/favicon.ico">
+
     <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+
     <style>
+      * {
+        font-family: "Roboto";
+        font-weight: 300;
+      }
       body {
+        background-color: rgb(255, 255, 255);
         margin: 0px;
         padding: 0px;
+      }
+
+      h1 {
+        margin: 0px;
+        font-weight: 400;
+      }
+
+      /* HEADER */
+      .header {
+        display: flex;
+        background-color: rgb(250, 250, 250);
+        width: calc(100vw - 100px);
+        height: 50px;
+        padding: 25px 50px;
+        margin: 0px;
+        box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
+        line-height: 50px;
+      }
+      .main-icon {
+        width: 50px;
+        height: 50px;
+        margin-right: 25px;
+      }
+      .header-text {
+        flex-grow: 1;
+      }
+      .content {
+
+      }
+      .footer {
+
+      }
+      /* PAGE STYLES */
+
+
+      /* INPUT STYLES */
+
+
+      /* OPTIONS / OPTION ICON STYLES */
+      .icon {
+        width: 30px;
+        height: 30px;
+      }
+      .options-container {
+        display: flex;
+      }
+      .icon-container, .icon-container-close {
+        background-color: rgba(0, 0, 0, 0);
+        width: 30px;
+        height: 30px;
+        padding: 10px;
+        margin-left: 25px;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.5s;
+      }
+      .icon-container:hover, .icon-container-close:hover {
+        background-color: rgb(225, 225, 225);
+        cursor: pointer;
+      }
+      .icon-container-close {
+        position: absolute;
+        top: 25px;
+        right: 50px;
+      }
+      .account-icon-container-close {
+        margin-right: 75px;
+      }
+
+      /* COVER STYLES */
+      .cover {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0);
+        width: calc(100vw - 200px);
+        height: calc(100vh - 200px);
+        margin: 0px;
+        padding: 100px;
+        top: 0px;
+        left: 0px;
+        opacity: 0;
+        z-index: 3;
+        pointer-events: none;
+        transition: all 0.5s;
+      }
+      .cover-active {
+        background-color: rgba(250, 250, 250, 1);
+        opacity: 1;
+      }
+      .settings, .account {
+        position: absolute;
+        width: calc(100vw - 200px);
+        height: calc(100vh - 200px);
+        margin: 0px;
+        padding: 100px;
+        top: 0px;
+        left: 0px;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.5s;
+      }
+      .settings-active, .account-active {
+        opacity: 1;
       }
     </style>
   </head>
   <body>
+
+    <!-- Header -->
     <div class="header">
-      ReChat
+      <img class="main-icon" src="resources/bubble.png" alt="Chat Bubble Icon"> <!-- ReChat Icon -->
+      <div class="header-text"> <!-- ReChat Text -->
+        <h1>ReChat</h1>
+      </div>
+
+      <div class="options-container"> <!-- Options Container -->
+        <div class="icon-container account-icon-container" onclick="toggleCover('account')"> <!-- Account Icon -->
+          <img class="icon account-icon" src="resources/person.png" alt="Account Icon">
+        </div>
+        <div class="icon-container settings-icon-container" onclick="toggleCover('settings')"> <!-- Settings Icon -->
+          <img class="icon settings-icon" src="resources/gear.png" alt="Settings Icon">
+        </div>
+      </div>
     </div>
-    <div class="login">
-      <input id="username">
-      <input id="password" type="password">
+
+    <!-- Page Content -->
+    <div class="content">
+      <div class="home">
+
+      </div>
+      <div class="chat">
+
+      </div>
     </div>
-    <div class="home">
-      
-    </div>
-    <div class="chat">
-      
+
+    <!-- Page Covers -->
+    <div class="cover">
+      <!-- Settings Cover -->
+      <div class="settings">
+        <div class="icon-container-close settings-icon-container-close" onclick="toggleCover('settings')">
+          <img class="icon settings-icon" src="resources/gear.png" alt="Settings Icon">
+        </div>
+        <h1>Settings</h1><br>
+        Welcome to settings!<br>
+        There are currently no settings.
+      </div>
+      <!-- Account Cover -->
+      <div class="account">
+        <div class="icon-container-close account-icon-container-close" onclick="toggleCover('account')">
+          <img class="icon account-icon" src="resources/person.png" alt="Account Icon">
+        </div>
+        <h1>Account</h1><br>
+        Welcome to account!<br>
+        You are not signed in.<br><br>
+        <input type="text" id="username" placeholder="Username"><br>
+        <input type="password" id="password" placeholder="Password"><br><br>
+        <input type="checkbox" id="remember">Keep me logged in<br><br>
+        <button onclick="login()" id="login">Login</button><br>
+        <button onclick="createAccount()" id="createAccount">or Create an Account</button>
+      </div>
     </div>
     <script>
-      
+
+      /*
+
+        FIREBASE CONFIGURATION
+         firebaseConfig{}
+          = The firebase configuration settings
+         database{}
+          = The firebase database
+         ref{}
+          = An object that stores database references
+          - .users: stores user information
+          - .chats: stores chat information
+
+      */
+      var firebaseConfig = {
+        apiKey: "AIzaSyAzIjPSrNxIrK-iCilWh5mROXQVelv4BMY",
+        authDomain: "ss-rechat.firebaseapp.com",
+        databaseURL: "https://ss-rechat.firebaseio.com",
+        projectId: "ss-rechat",
+        storageBucket: "ss-rechat.appspot.com",
+        messagingSenderId: "631092612965",
+        appId: "1:631092612965:web:e6028598ce1456cc5adb8c",
+        measurementId: "G-L3XWNRKF9K"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+      var database = firebase.database();
+      var ref = {
+        users: database.ref("users"),
+        chats: database.ref("chats")
+      };
+
+      /*
+
+        COVER DISPLAY:
+         toggleCover(icon)
+          = Toggles the cover and displays the given icon's tab
+          - icon: the name of the icon whose tab should be displayed on the cover (example: "settings")
+
+      */
+      var optionOpen = "";
+      function toggleCover(icon) {
+        if (optionOpen === "") { // Open
+          optionOpen = icon;
+          toggle("cover");
+          toggle(icon);
+          document.getElementsByClassName("cover")[0].style.pointerEvents = "auto";
+          document.getElementsByClassName(icon)[0].style.pointerEvents = "auto";
+        } else if (optionOpen === icon) { // Close
+          optionOpen = "";
+          toggle("cover");
+          toggle(icon);
+          document.getElementsByClassName("cover")[0].style.pointerEvents = "none";
+          document.getElementsByClassName(icon)[0].style.pointerEvents = "none";
+        }
+      }
+
+      /*
+
+        HELPER FUNCTIONS:
+         toggle(cl, ocl)
+          = Toggles the class "given class + '-active'" on the elements with the given class
+          - cl: the class; elements with this class will have the class "cl + '-active'" toggled
+          - ocl (optional): overrides the class that elements with the given class should have toggled ("ocl + '-active'" will be toggled instead of "cl + '-active'")
+         hide(id)
+          = Hides the element with the given id
+          - id: the element's id
+         show(id)
+          = Shows the element with the given id
+          - id: the element's id
+
+      */
+      function toggle(cl, ocl) {
+        var el = document.getElementsByClassName(cl).length > 0 ? document.getElementsByClassName(cl) : [document.getElementById(cl)];
+        ocl = ocl ? (ocl + "-active") : (cl + "-active");
+        for (var i = 0; i < el.length; i++) {
+          if (el[i].classList.contains(ocl)) {
+            el[i].classList.remove(ocl);
+          } else {
+            el[i].classList.add(ocl);
+          }
+        }
+      }
+      function hide(id) {
+        document.getElementById(id).style.display = "none";
+      }
+      function show(id) {
+        document.getElementById(id).style.display = "block";
+      }
+
+      // End of script
     </script>
   </body>
 </html>
