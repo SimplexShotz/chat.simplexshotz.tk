@@ -96,7 +96,7 @@
         border: 3px solid rgb(200, 200, 200);
         border-radius: 10px 10px 0px 10px;
         font-size: 16pt;
-        margin: auto;
+        margin: 0px auto;
         transition: all 0.5s;
       }
       .form button:hover {
@@ -116,56 +116,45 @@
         margin: 0px;
         font-size: 16pt;
       }
-      /* Customize the label (the container) */
       .checkbox-container {
-        display: block;
-        position: relative;
-        font-size: 16px;
+        margin: 15px 0px;
+      }
+      .checkbox {
+        display: inline-block;
+        background-color: rgb(255, 255, 255);
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+        border: 3px solid rgb(200, 200, 200);
+        border-radius: 10px 10px 0px 10px;
+        transition: all 0.5s;
+      }
+      .checkbox:hover {
         cursor: pointer;
-        user-select: none;
+        border: 3px solid rgb(100, 100, 225);
       }
-      /* Hide the browser's default checkbox */
-      .checkbox-container input {
-        display: none;
-      }
-      /* Create a custom checkbox */
       .checkmark {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 25px;
-        width: 25px;
-        background-color: #eee;
+        width: 15px;
+        height: 8px;
+        margin: 4px auto;
+        border-left: 3px solid rgb(200, 200, 200);
+        border-bottom: 3px solid rgb(200, 200, 200);
+        transform: rotate(-45deg);
+        opacity: 0;
+        transition: all 0.5s;
       }
-      /* On mouse-over, add a grey background color */
-      .checkbox-container:hover input ~ .checkmark {
-        background-color: #ccc;
+      .checkbox:hover .checkmark {
+        border-left: 3px solid rgb(100, 100, 225);
+        border-bottom: 3px solid rgb(100, 100, 225);
       }
-      /* When the checkbox is checked, add a blue background */
-      .checkbox-container input:checked ~ .checkmark {
-        background-color: #2196F3;
+      .checked .checkmark {
+        opacity: 1;
       }
-      /* Create the checkmark/indicator (hidden when not checked) */
-      .checkmark:after {
-        content: "";
-        position: absolute;
-        display: none;
-      }
-      /* Show the checkmark when checked */
-      .checkbox-container input:checked ~ .checkmark:after {
-        display: block;
-      }
-      /* Style the checkmark/indicator */
-      .checkbox-container .checkmark:after {
-        left: 9px;
-        top: 5px;
-        width: 5px;
-        height: 10px;
-        border: solid white;
-        border-width: 0 3px 3px 0;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg);
+      .checkbox-container span {
+        position: relative;
+        top: -7.5px;
+        color: rgb(0, 0, 0);
+        font-size: 16pt;
       }
 
       /* =================================================================================================================================================================================
@@ -221,6 +210,10 @@
       }
       .settings-active, .account-active {
         opacity: 1;
+      }
+
+      #sign-up {
+        display: none;
       }
 
       .tablet, .desktop {
@@ -311,11 +304,19 @@
         <h1>Account</h1>
         <p>Welcome to the account page!</p>
         <p>You are not signed in.</p>
-        <div class="form">
-          <input type="text" id="username" placeholder="Username">
+        <div id="login" class="form">
+          <input type="text" id="email" placeholder="Email">
           <input type="password" id="password" placeholder="Password">
-          <label class="checkbox-container">Keep me logged in<input type="checkbox"><span class="checkmark"></span></label>
-          <button onclick="login()" id="login">Login</button><span>or</span><button onclick="createAccount()" id="createAccount">Create an Account</button>
+          <div class="checkbox-container"><div id="remember" class="checkbox" onclick="toggleCheck(this)"><div class="checkmark"></div></div><span>Remember Me</span></div>
+          <button onclick="login()" id="login">Login</button><span> or </span><button onclick="hide('login'); show('sign-up');" id="createAccount">Sign-Up Instead</button>
+        </div>
+        <div id="sign-up" class="form">
+          <input type="text" id="username" placeholder="Username">
+          <input type="text" id="displayname" placeholder="Display Name">
+          <input type="text" id="email" placeholder="Email">
+          <input type="password" id="password" placeholder="Password">
+          <div class="checkbox-container"><div id="agreement" class="checkbox" onclick="toggleCheck(this)"><div class="checkmark"></div></div><span>I agree to the <a href="https://simplexshotz.github.io/TermsOfService/">Terms of Service</a></span></div>
+          <button onclick="signup()" id="login">Sign Up</button><span> or </span><button onclick="hide('sign-up'); show('login');" id="createAccount">Login Instead</button>
         </div>
       </div>
     </div>
@@ -411,6 +412,13 @@
         document.getElementById(id).style.display = "block";
       }
 
+      function toggleCheck(el) {
+        if (el.classList.contains("checked")) { // Was checked
+          el.classList.remove("checked"); // Remove the "checked" class
+        } else { // Was not checked
+          el.classList.add("checked"); // Add the "checked" class
+        }
+      }
       // End of script
     </script>
   </body>
