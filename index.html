@@ -89,14 +89,14 @@
         border: 3px solid rgb(100, 100, 225);
       }
       .form button {
-        display: inline-block;
+        display: block;
         background-color: rgb(255, 255, 255);
         color: rgb(0, 0, 0);
         padding: 10px 25px;
         border: 3px solid rgb(200, 200, 200);
         border-radius: 10px 10px 0px 10px;
         font-size: 16pt;
-        margin: 0px auto;
+        margin: 5px auto;
         transition: all 0.5s;
       }
       .form button:hover {
@@ -206,6 +206,7 @@
         z-index: 3;
         text-align: center;
         pointer-events: none;
+        overflow-y: auto;
         transition: all 0.5s;
       }
       .settings-active, .account-active {
@@ -231,6 +232,9 @@
         }
         .form {
           width: 50vw;
+        }
+        .form button {
+          display: inline-block;
         }
         .icon-container-close {
           right: 50px;
