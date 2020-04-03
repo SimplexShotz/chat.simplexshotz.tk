@@ -67,7 +67,48 @@
       /* =================================================================================================================================================================================
         FORM STYLES
       */
-
+      .form {
+        padding-top: 50px;
+        text-align: center;
+      }
+      .form input {
+        display: block;
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 3px solid rgb(200, 200, 200);
+        border-radius: 10px 10px 0px 10px;
+        font-size: 16pt;
+        transition: all 0.5s;
+      }
+      .form input:focus {
+        outline: none;
+        border: 3px solid rgb(100, 100, 225);
+      }
+      .form button {
+        display: block;
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+        padding: 10px 25px;
+        border: 3px solid rgb(200, 200, 200);
+        border-radius: 10px 10px 0px 10px;
+        font-size: 16pt;
+        margin: auto;
+        transition: all 0.5s;
+      }
+      .form button:hover {
+        border: 3px solid rgb(100, 100, 225);
+        cursor: pointer;
+      }
+      .form button:focus {
+        outline: none;
+      }
+      .form p {
+        color: rgb(200, 200, 200);
+        font-size: 16pt;
+      }
 
       /* =================================================================================================================================================================================
         OPTIONS / OPTION ICON STYLES
@@ -209,11 +250,14 @@
         <h1>Account</h1><br>
         Welcome to account!<br>
         You are not signed in.<br><br>
-        <input type="text" id="username" placeholder="Username"><br>
-        <input type="password" id="password" placeholder="Password"><br><br>
-        <input type="checkbox" id="remember">Keep me logged in<br><br>
-        <button onclick="login()" id="login">Login</button><br>
-        <button onclick="createAccount()" id="createAccount">or Create an Account</button>
+        <div class="form">
+          <input type="text" id="username" placeholder="Username"><br>
+          <input type="password" id="password" placeholder="Password"><br><br>
+          <input type="checkbox" id="remember">Keep me logged in<br><br>
+          <button onclick="login()" id="login">Login</button>
+          <p>or</p>
+          <button onclick="createAccount()" id="createAccount">Create an Account</button>
+        </div>
       </div>
     </div>
     <script>
