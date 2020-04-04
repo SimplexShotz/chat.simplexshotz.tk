@@ -33,64 +33,6 @@
       }
 
       /* =================================================================================================================================================================================
-        HEADER STYLES
-      */
-      .header {
-        position: relative;
-        display: flex;
-        background-color: rgb(250, 250, 250);
-        width: calc(100vw - 50px);
-        height: 50px;
-        padding: 25px;
-        margin: 0px;
-        box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
-        z-index: 2;
-        line-height: 50px;
-        overflow-x: auto;
-      }
-      .main-icon {
-        width: 50px;
-        height: 50px;
-        margin-right: 25px;
-      }
-      .header-text {
-        flex-grow: 1;
-      }
-      .footer {
-
-      }
-
-      /* =================================================================================================================================================================================
-        CONTENT STYLES
-      */
-      .content {
-        width: 100%;
-      }
-      .home {
-        width: 100%;
-        text-align: center;
-        overflow: auto;
-      }
-      .chat-link {
-        background-color: rgb(255, 255, 255);
-        width: 100%;
-        padding: 50px 0px;
-        border-bottom: 1px solid rgb(200, 200, 200);
-        text-align: center;
-        font-size: 16pt;
-        transition: all 0.5s;
-      }
-      .chat-link:hover {
-        background-color: rgb(250, 250, 250);
-        cursor: pointer;
-      }
-
-      #chat-header {
-        padding: 50px 0px;
-        border-bottom: 1px solid rgb(200, 200, 200);
-      }
-
-      /* =================================================================================================================================================================================
         FORM STYLES
       */
       .form {
@@ -98,7 +40,7 @@
         margin: 0px auto;
         text-align: center;
       }
-      .form input {
+      input {
         display: block;
         background-color: rgb(255, 255, 255);
         color: rgb(0, 0, 0);
@@ -110,11 +52,11 @@
         font-size: 16pt;
         transition: all 0.5s;
       }
-      .form input:focus {
+      input:focus {
         outline: none;
         border: 3px solid rgb(100, 100, 225);
       }
-      .form button {
+      button {
         display: block;
         background-color: rgb(255, 255, 255);
         color: rgb(0, 0, 0);
@@ -125,25 +67,25 @@
         margin: 5px auto;
         transition: all 0.5s;
       }
-      .form button:hover, .form button:focus {
+      button:hover, button:focus {
         border: 3px solid rgb(100, 100, 225);
         outline: none;
         cursor: pointer;
       }
-      .form button:disabled {
+      button:disabled {
         background-color: rgb(250, 250, 250);
         color: rgb(150, 150, 150);
         border: 3px solid rgb(200, 200, 200);
       }
-      .form button:disabled:hover {
+      button:disabled:hover {
         cursor: not-allowed;
       }
-      .form p {
+      p {
         color: rgb(200, 200, 200);
         margin: 0px;
         font-size: 16pt;
       }
-      .form span {
+      span {
         color: rgb(200, 200, 200);
         margin: 0px;
         font-size: 16pt;
@@ -187,6 +129,109 @@
         top: -7.5px;
         color: rgb(0, 0, 0);
         font-size: 16pt;
+      }
+
+      /* =================================================================================================================================================================================
+        HEADER STYLES
+      */
+      .header {
+        position: relative;
+        display: flex;
+        background-color: rgb(250, 250, 250);
+        width: calc(100vw - 50px);
+        height: 50px;
+        padding: 25px;
+        margin: 0px;
+        box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
+        z-index: 2;
+        line-height: 50px;
+        overflow-x: auto;
+      }
+      .main-icon {
+        width: 50px;
+        height: 50px;
+        margin-right: 25px;
+      }
+      .header-text {
+        flex-grow: 1;
+      }
+      .footer {
+
+      }
+
+      /* =================================================================================================================================================================================
+        CONTENT STYLES
+      */
+      .content {
+        display: flex;
+        width: 100%;
+      }
+
+      .sidebar {
+        display: flex;
+        background-color: rgb(250, 250, 250);
+        width: 100%;
+        height: calc(100vh - 150px);
+        padding: 25px;
+        text-align: center;
+        overflow: auto;
+        flex-direction: column;
+      }
+      .chat-link {
+        background-color: rgb(250, 250, 250);
+        width: calc(100% - 20px);
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 16pt;
+        transition: background-color 0.5s;
+      }
+      .chat-link:hover {
+        background-color: rgb(225, 225, 225);
+        cursor: pointer;
+      }
+      .chat-link:active {
+        background-color: rgb(200, 200, 200);
+        cursor: pointer;
+      }
+      #chat-header {
+        padding: 50px 0px;
+        border-bottom: 1px solid rgb(200, 200, 200);
+        margin: 0px 10px 10px 10px;
+      }
+
+      .chat {
+        display: none;
+        width: 100%;
+        height: calc(100vh - 100px);
+        flex-direction: column;
+      }
+      .messages-container {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+      .messages-spacer {
+        flex-grow: 1;
+        background-color: rgb(0, 0, 255);
+      }
+      .messages {
+        background-color: rgb(255, 0, 0);
+        height: 100px;
+      }
+      .message-input-container {
+        display: flex;
+        height: calc(51px); /* 16pt of input + (10px of padding on input) * 2 + (3px of border on input) * 2 + (10px of padding on container) * 2 */
+        padding: 10px;
+      }
+      .message-input {
+        display: inline-block;
+        flex-grow: 1;
+        margin: 0px 10px 0px 0px;
+      }
+      .message-send {
+        display: inline-block;
+        margin: 0px;
       }
 
       /* =================================================================================================================================================================================
@@ -286,37 +331,18 @@
       */
       @media (min-width: 992px) {
 
-        .home {
-          display: flex;
+        .sidebar {
           position: relative;
-          background-color: rgb(250, 250, 250);
           width: 20vw;
-          height: calc(100vh - 150px);
-          margin: 0px;
-          padding: 25px;
           box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
           z-index: 1;
-          flex-direction: column;
         }
         #chat-header {
           padding: 25px 0px;
-          margin: 0px 10px 10px 10px;
         }
-        .chat-link {
-          background-color: rgb(250, 250, 250);
-          width: calc(100% - 20px);
-          padding: 10px;
-          border: none;
-          border-radius: 10px;
-          transition: all 0.5s;
-        }
-        .chat-link:hover {
-          background-color: rgb(225, 225, 225);
-          cursor: pointer;
-        }
-        .chat-link:active {
-          background-color: rgb(200, 200, 200);
-          cursor: pointer;
+
+        .chat {
+          display: flex;
         }
 
         .tablet, .desktop {
@@ -346,12 +372,21 @@
 
     <!-- Page Content -->
     <div class="content">
-      <div class="home">
+      <div class="sidebar">
         <h1 id="chat-header">Chats</h1>
-        <div class="chat-link" onclick="openChat('global')">Global</div>
+        <div class="chat-link-container">
+          <div class="chat-link" onclick="openChat({ type: 'group', name: 'global' })">Global</div>
+        </div>
       </div>
       <div class="chat">
-
+        <div class="messages-container">
+          <div class="messages-spacer"></div>
+          <div class="messages"></div>
+        </div>
+        <div class="message-input-container">
+          <input class="message-input" placeholder="Message">
+          <button class="message-send">Send</button>
+        </div>
       </div>
     </div>
 
@@ -398,7 +433,13 @@
 
       var user = {
         username: "guest",
-        displayname: "Guest"
+        displayname: "Guest",
+        email: "None",
+        uid: "guest"
+      };
+      var openChat = {
+        type: false,
+        name: false
       };
 
       /*
@@ -465,6 +506,12 @@
           = Creates an accound for the user
          login()
           = Logs a user into their account
+         logout()
+          = Logs a user out of their account
+         firebase.auth().onAuthStateChanged()
+          = Run when the authentication state changes (after sign-up/login/logout)
+         userLoggedIn()
+          = Called inside of "firebase.auth().onAuthStateChanged()" when a user logs in
 
       */
       function signup() {
@@ -541,25 +588,17 @@
           alert("Something went wrong. Contact the developer at \"brancy280@gmail.com\". \nThe error code is \"" + errorCode + "\".");
         });
       }
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
+      firebase.auth().onAuthStateChanged(function(u) {
+        if (u) {
           // User is signed in.
-          ref.users.child(user.uid).once("value", function(data) {
+          ref.users.child(u.uid).once("value", function(data) {
             var d = data.val();
             if (d === null) { // Sign Up
-              ref.users.child(user.uid).set({
+              ref.users.child(u.uid).set({
                 username: document.getElementById("signup-username").value,
                 displayname: document.getElementById("signup-displayname").value,
                 email: document.getElementById("signup-email").value
               });
-
-              // Reset sign up forms:
-              document.getElementById("signup-username").value = "";
-              document.getElementById("signup-displayname").value = "";
-              document.getElementById("signup-email").value = "";
-              document.getElementById("signup-password").value = "";
-              document.getElementById("signup-password-confirm").value = "";
-              document.getElementById("signup-agreement").classList.remove("checked");
 
               document.getElementById("loginstatus").innerHTML = "Logged in as \"" + document.getElementById("signup-username").value + ".\"";
               document.getElementById("signup-button").disabled = false;
@@ -568,13 +607,19 @@
               user = {
                 username: document.getElementById("signup-username").value,
                 displayname: document.getElementById("signup-displayname").value,
-                email: document.getElementById("signup-email").value
+                email: document.getElementById("signup-email").value,
+                uid: u.uid
               };
-            } else { // Login
+              sendMessage("Welcome, " + user.displayname + "!", { type: "group", name: "global" });
 
-              // Reset login forms:
-              document.getElementById("login-email").value = "";
-              document.getElementById("login-password").value = "";
+              // Reset sign up forms:
+              document.getElementById("signup-username").value = "";
+              document.getElementById("signup-displayname").value = "";
+              document.getElementById("signup-email").value = "";
+              document.getElementById("signup-password").value = "";
+              document.getElementById("signup-password-confirm").value = "";
+              document.getElementById("signup-agreement").classList.remove("checked");
+            } else { // Login
 
               document.getElementById("loginstatus").innerHTML = "Logged in as \"" + d.username + ".\"";
               document.getElementById("login-button").disabled = false;
@@ -583,21 +628,25 @@
               user = {
                 username: d.username,
                 displayname: d.displayname,
-                email: d.email
+                email: d.email,
+                uid: u.uid
               };
+              sendMessage(user.displayname + " logged in.", { type: "group", name: "global" });
+
+              // Reset login forms:
+              document.getElementById("login-email").value = "";
+              document.getElementById("login-password").value = "";
             }
-            hide("login");
-            hide("signup");
-            show("logout");
+            userLoggedIn();
           });
 
-          var displayName = user.displayName;
-          var email = user.email;
-          var emailVerified = user.emailVerified;
-          var photoURL = user.photoURL;
-          var isAnonymous = user.isAnonymous;
-          var uid = user.uid;
-          var providerData = user.providerData;
+          var displayName = u.displayName;
+          var email = u.email;
+          var emailVerified = u.emailVerified;
+          var photoURL = u.photoURL;
+          var isAnonymous = u.isAnonymous;
+          var uid = u.uid;
+          var providerData = u.providerData;
           // console.log(user);
           // ...
         } else {
@@ -606,6 +655,39 @@
           // ...
         }
       });
+      function userLoggedIn() {
+        hide("login");
+        hide("signup");
+        show("logout");
+        updateChats();
+      }
+
+      /*
+
+        MESSAGING FUNCTIONS
+         sendMessage(message, to)
+          = Sends the given message to the given "to"
+          - message: the message being sent
+          - to{}: { type: the type of the chat ("user" or "group"), name: the UID of the recipient/name of the group }
+
+      */
+      function sendMessage(message, to) {
+        // Send the message:
+        ref.chats.child(to.type).child(to.name).child("from").child(user.uid).push({
+          message: message,
+          time: new Date().getTime()
+        });
+        // Add that to the user's "to" (if it does not exist):
+        ref.chats.child("user").child(user.uid).child("to").child(to.type).child(to.name).set(true);
+        updateChats();
+      }
+      function updateChats() {
+        ref.chats.child("user").child(user.uid).once("value", function(data) {
+          var d = data.val();
+          console.log(d.to);
+          console.log(d.from);
+        });
+      }
 
       /*
 
