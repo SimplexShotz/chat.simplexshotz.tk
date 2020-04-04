@@ -11,6 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
 
     <style>
       /* =================================================================================================================================================================================
@@ -105,6 +106,14 @@
       }
       .form button:focus {
         outline: none;
+      }
+      .form button:disabled {
+        background-color: rgb(250, 250, 250);
+        color: rgb(150, 150, 150);
+        border: 3px solid rgb(200, 200, 200);
+      }
+      .form button:disabled:hover {
+        cursor: not-allowed;
       }
       .form p {
         color: rgb(200, 200, 200);
@@ -213,7 +222,7 @@
         opacity: 1;
       }
 
-      #sign-up {
+      #signup, #logout {
         display: none;
       }
 
@@ -307,20 +316,24 @@
         </div>
         <h1>Account</h1>
         <p>Welcome to the account page!</p>
-        <p>You are not signed in.</p>
+        <p id="loginstatus">You are not logged in.</p>
         <div id="login" class="form">
-          <input type="text" id="email" placeholder="Email">
-          <input type="password" id="password" placeholder="Password">
-          <div class="checkbox-container"><div id="remember" class="checkbox" onclick="toggleCheck(this)"><div class="checkmark"></div></div><span>Remember Me</span></div>
-          <button onclick="login()" id="login">Login</button><span> or </span><button onclick="hide('login'); show('sign-up');" id="createAccount">Sign-Up Instead</button>
+          <input type="text" id="login-email" placeholder="Email">
+          <input type="password" id="login-password" placeholder="Password">
+          <!-- <div class="checkbox-container"><div id="login-remember" class="checkbox" onclick="toggleCheck(this)"><div class="checkmark"></div></div><span>Remember Me</span></div> -->
+          <button id="login-button" onclick="login()">Login</button><span> or </span><button onclick="hide('login'); show('signup');">Sign-Up Instead</button>
         </div>
-        <div id="sign-up" class="form">
-          <input type="text" id="username" placeholder="Username">
-          <input type="text" id="displayname" placeholder="Display Name">
-          <input type="text" id="email" placeholder="Email">
-          <input type="password" id="password" placeholder="Password">
-          <div class="checkbox-container"><div id="agreement" class="checkbox" onclick="toggleCheck(this)"><div class="checkmark"></div></div><span>I agree to the <a href="https://simplexshotz.github.io/TermsOfService/">Terms of Service</a></span></div>
-          <button onclick="signup()" id="login">Sign Up</button><span> or </span><button onclick="hide('sign-up'); show('login');" id="createAccount">Login Instead</button>
+        <div id="signup" class="form">
+          <input type="text" id="signup-username" placeholder="Username">
+          <input type="text" id="signup-displayname" placeholder="Display Name">
+          <input type="text" id="signup-email" placeholder="Email">
+          <input type="password" id="signup-password" placeholder="Password">
+          <input type="password" id="signup-password-confirm" placeholder="Confirm Password">
+          <div class="checkbox-container"><div id="signup-agreement" class="checkbox" onclick="toggleCheck(this)"><div class="checkmark"></div></div><span>I agree to the <a href="https://simplexshotz.github.io/TermsOfService/">Terms of Service</a></span></div>
+          <button id="signup-button" onclick="signup()">Sign Up</button><span> or </span><button onclick="hide('signup'); show('login');">Login Instead</button>
+        </div>
+        <div id="logout" class="form">
+          <button id="logout-button" onclick="logout()">Logout</button>
         </div>
       </div>
     </div>
@@ -382,6 +395,143 @@
           document.getElementsByClassName(icon)[0].style.pointerEvents = "none";
         }
       }
+
+      /*
+
+        ACCOUNT FUNCTIONS
+         signup()
+          = Creates an accound for the user
+         login()
+          = Logs a user into their account
+
+      */
+      function signup() {
+        var username = document.getElementById("signup-username").value;
+        var displayname = document.getElementById("signup-displayname").value;
+        var email = document.getElementById("signup-email").value;
+        var password = document.getElementById("signup-password").value;
+        var passwordConfirm = document.getElementById("signup-password-confirm").value;
+        var agreed = document.getElementById("signup-agreement").classList.contains("checked");
+
+        var ret = false;
+        if (!username) { alert("Enter your username."); ret = true; }
+        if (!displayname) { alert("Enter your display name."); ret = true; }
+        if (!email) { alert("Enter your email."); ret = true; }
+        if (!password) { alert("Enter your password."); ret = true; }
+        else if (password !== passwordConfirm) { alert("The passwords you entered don't match!"); ret = true; }
+        if (!agreed) { alert("You must agree to the terms of service."); ret = true; }
+        if (ret) { return; }
+
+        document.getElementById("loginstatus").innerHTML = "Signing up...";
+        document.getElementById("signup-button").disabled = true;
+
+        // Create Account:
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+          // Error handling:
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          document.getElementById("loginstatus").innerHTML = "Sign-up failed.";
+          document.getElementById("signup-button").disabled = false;
+          if (errorCode === "auth/email-already-in-use") { alert("That email is already in use! If you already have an account, login by clicking \"Login Instead.\""); }
+          else if (errorCode === "auth/invalid-email") { alert("That email is invalid! Make sure you typed your email in correctly."); }
+          else if (errorCode === "auth/weak-password") { alert("That password is weak! Make sure your password is at least 6 characters long."); }
+          else { alert("Something went wrong. Contact the developer at \"brancy280@gmail.com\". \nThe error code is \"" + errorCode + "\"."); }
+        });
+      }
+      function login() {
+        var email = document.getElementById("login-email").value;
+        var password = document.getElementById("login-password").value;
+
+        var ret = false;
+        if (!email) { alert("Enter your email."); ret = true; }
+        if (!password) { alert("Enter your password."); ret = true; }
+        if (ret) { return; }
+
+        document.getElementById("loginstatus").innerHTML = "Logging in...";
+        document.getElementById("login-button").disabled = true;
+
+        // Login:
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+          // Error Handling:
+          var errorCode = error.code;
+          document.getElementById("loginstatus").innerHTML = "Login failed.";
+          document.getElementById("login-button").disabled = false;
+          if (errorCode === "auth/invalid-email" || errorCode === "auth/user-not-found" || errorCode === "auth/wrong-password") {
+            alert("There is no account with that email and password. Try entering a different email/password or create a new account by clicking \"Sign-Up Instead.\"");
+          } else {
+            alert("Something went wrong. Contact the developer at \"brancy280@gmail.com\". \nThe error code is \"" + errorCode + "\".");
+          }
+        });
+      }
+      function logout() {
+        document.getElementById("loginstatus").innerHTML = "Logging out...";
+        document.getElementById("logout-button").disabled = true;
+        firebase.auth().signOut().then(function() {
+          document.getElementById("loginstatus").innerHTML = "Logged out. You are not logged in.";
+          document.getElementById("logout-button").disabled = false;
+          alert("Logout successful! You are no longer logged in.");
+          hide("logout");
+          show("login");
+        }).catch(function(error) {
+          var errorCode = error.code;
+          document.getElementById("loginstatus").innerHTML = "Logout failed.";
+          document.getElementById("logout-button").disabled = false;
+          alert("Something went wrong. Contact the developer at \"brancy280@gmail.com\". \nThe error code is \"" + errorCode + "\".");
+        });
+      }
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          ref.users.child(user.uid).once("value", function(data) {
+            var d = data.val();
+            if (d === null) { // Sign-up
+              ref.users.child(user.uid).set({
+                username: document.getElementById("signup-username").value,
+                displayname: document.getElementById("signup-displayname").value,
+                email: document.getElementById("signup-email").value
+              });
+
+              // Reset sign-up forms:
+              document.getElementById("signup-username").value = "";
+              document.getElementById("signup-displayname").value = "";
+              document.getElementById("signup-email").value = "";
+              document.getElementById("signup-password").value = "";
+              document.getElementById("signup-password-confirm").value = "";
+              document.getElementById("signup-agreement").classList.remove("checked");
+
+              document.getElementById("loginstatus").innerHTML = "Logged in as \"" + document.getElementById("signup-username").value + ".\"";
+              document.getElementById("signup-button").disabled = false;
+              alert("Sign-up successful! You are now logged in as \"" + document.getElementById("signup-username").value + ".\"");
+            } else { // Login
+
+              // Reset login forms:
+              document.getElementById("login-email").value = "";
+              document.getElementById("login-password").value = "";
+
+              document.getElementById("loginstatus").innerHTML = "Logged in as \"" + d.username + ".\"";
+              document.getElementById("login-button").disabled = false;
+              alert("Login successful! You are now logged in as \"" + d.username + ".\"");
+            }
+            hide("login");
+            hide("signup");
+            show("logout");
+          });
+
+          var displayName = user.displayName;
+          var email = user.email;
+          var emailVerified = user.emailVerified;
+          var photoURL = user.photoURL;
+          var isAnonymous = user.isAnonymous;
+          var uid = user.uid;
+          var providerData = user.providerData;
+          // console.log(user);
+          // ...
+        } else {
+          // alert("SIGNED OUT");
+          // User is signed out.
+          // ...
+        }
+      });
 
       /*
 
