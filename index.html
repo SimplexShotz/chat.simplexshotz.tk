@@ -36,6 +36,7 @@
         HEADER STYLES
       */
       .header {
+        position: relative;
         display: flex;
         background-color: rgb(250, 250, 250);
         width: calc(100vw - 50px);
@@ -43,6 +44,7 @@
         padding: 25px;
         margin: 0px;
         box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
+        z-index: 2;
         line-height: 50px;
         overflow-x: auto;
       }
@@ -54,16 +56,39 @@
       .header-text {
         flex-grow: 1;
       }
-      .content {
-
-      }
       .footer {
 
       }
 
       /* =================================================================================================================================================================================
-        PAGE STYLES
+        CONTENT STYLES
       */
+      .content {
+        width: 100%;
+      }
+      .home {
+        width: 100%;
+        text-align: center;
+        overflow: auto;
+      }
+      .chat-link {
+        background-color: rgb(255, 255, 255);
+        width: 100%;
+        padding: 50px 0px;
+        border-bottom: 1px solid rgb(200, 200, 200);
+        text-align: center;
+        font-size: 16pt;
+        transition: all 0.5s;
+      }
+      .chat-link:hover {
+        background-color: rgb(250, 250, 250);
+        cursor: pointer;
+      }
+
+      #chat-header {
+        padding: 50px 0px;
+        border-bottom: 1px solid rgb(200, 200, 200);
+      }
 
       /* =================================================================================================================================================================================
         FORM STYLES
@@ -263,6 +288,39 @@
       */
       @media (min-width: 992px) {
 
+        .home {
+          display: flex;
+          position: relative;
+          background-color: rgb(250, 250, 250);
+          width: 20vw;
+          height: calc(100vh - 150px);
+          margin: 0px;
+          padding: 25px;
+          box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
+          z-index: 1;
+          flex-direction: column;
+        }
+        #chat-header {
+          padding: 25px 0px;
+          margin: 0px 10px 10px 10px;
+        }
+        .chat-link {
+          background-color: rgb(250, 250, 250);
+          width: calc(100% - 20px);
+          padding: 10px;
+          border: none;
+          border-radius: 10px;
+          transition: all 0.5s;
+        }
+        .chat-link:hover {
+          background-color: rgb(225, 225, 225);
+          cursor: pointer;
+        }
+        .chat-link:active {
+          background-color: rgb(200, 200, 200);
+          cursor: pointer;
+        }
+
         .tablet, .desktop {
           display: inline-block;
         }
@@ -291,7 +349,8 @@
     <!-- Page Content -->
     <div class="content">
       <div class="home">
-
+        <h1 id="chat-header">Chats</h1>
+        <div class="chat-link" onclick="openChat('global')">Global</div>
       </div>
       <div class="chat">
 
@@ -338,6 +397,11 @@
       </div>
     </div>
     <script>
+
+      var user = {
+        username: "guest",
+        displayname: "Guest"
+      };
 
       /*
 
@@ -502,6 +566,12 @@
               document.getElementById("loginstatus").innerHTML = "Logged in as \"" + document.getElementById("signup-username").value + ".\"";
               document.getElementById("signup-button").disabled = false;
               alert("Sign up successful! You are now logged in as \"" + document.getElementById("signup-username").value + ".\"");
+
+              user = {
+                username: document.getElementById("signup-username").value,
+                displayname: document.getElementById("signup-displayname").value,
+                email: document.getElementById("signup-email").value
+              };
             } else { // Login
 
               // Reset login forms:
@@ -511,6 +581,12 @@
               document.getElementById("loginstatus").innerHTML = "Logged in as \"" + d.username + ".\"";
               document.getElementById("login-button").disabled = false;
               alert("Login successful! You are now logged in as \"" + d.username + ".\"");
+
+              user = {
+                username: d.username,
+                displayname: d.displayname,
+                email: d.email
+              };
             }
             hide("login");
             hide("signup");
