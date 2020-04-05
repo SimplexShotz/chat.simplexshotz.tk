@@ -25,6 +25,7 @@
         background-color: rgb(255, 255, 255);
         margin: 0px;
         padding: 0px;
+        overflow: hidden;
       }
 
       h1 {
@@ -37,7 +38,7 @@
       */
       .form {
         width: 100%;
-        margin: 0px auto;
+        margin: 10px auto;
         text-align: center;
       }
       input {
@@ -169,13 +170,19 @@
 
       .sidebar {
         display: flex;
+        position: absolute;
+        left: 0vw;
         background-color: rgb(250, 250, 250);
-        width: 100%;
+        width: calc(100vw - 50px);
         height: calc(100vh - 150px);
         padding: 25px;
         text-align: center;
         overflow: auto;
         flex-direction: column;
+        transition: all 0.5s;
+      }
+      .chat-open .sidebar {
+        left: -100vw;
       }
       .chat-link {
         background-color: rgb(250, 250, 250);
@@ -200,23 +207,32 @@
       }
 
       .chat {
-        display: none;
-        width: 100%;
+        position: absolute;
+        left: 100vw;
+        width: 0vw;
         height: calc(100vh - 100px);
         flex-direction: column;
+        flex-grow: 1;
+        transition: all 0.5s;
+        opacity: 0;
+      }
+      .chat-open .chat {
+        display: flex;
+        left: 0vw;
+        width: 100vw;
+        opacity: 1;
       }
       .messages-container {
         display: flex;
-        width: 100%;
         flex-direction: column;
         flex-grow: 1;
       }
       .messages-spacer {
         flex-grow: 1;
-        background-color: rgb(0, 0, 255);
+        background-color: rgb(250, 250, 255);
       }
       .messages {
-        background-color: rgb(255, 0, 0);
+        background-color: rgb(255, 250, 250);
         height: 100px;
       }
       .message-input-container {
@@ -310,7 +326,7 @@
         .form {
           width: 50vw;
         }
-        .form button {
+        button {
           display: inline-block;
         }
         .icon-container-close {
@@ -333,16 +349,25 @@
 
         .sidebar {
           position: relative;
-          width: 20vw;
+          width: calc(20vw - 50px);
           box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
           z-index: 1;
+        }
+        .chat-open .sidebar {
+          display: flex; /* Always display the sidebar, even when chat is open */
+          left: 0vw;
         }
         #chat-header {
           padding: 25px 0px;
         }
 
         .chat {
-          display: flex;
+          position: static;
+          width: 80vw;
+          transition: all 0.5s;
+        }
+        .chat-open .chat {
+          width: 80vw;
         }
 
         .tablet, .desktop {
@@ -385,7 +410,7 @@
         </div>
         <div class="message-input-container">
           <input class="message-input" placeholder="Message">
-          <button class="message-send">Send</button>
+          <button class="message-send" onclick="sendMessage(document.getElementsByClassName('message-input')[0].value, currentChat); document.getElementsByClassName('message-input')[0].value = '';">Send</button>
         </div>
       </div>
     </div>
@@ -406,9 +431,9 @@
         <div class="icon-container-close account-icon-container-close" onclick="toggleCover('account')">
           <img class="icon account-icon" src="resources/person.png" alt="Account Icon">
         </div>
-        <h1>Account</h1>
-        <p>Welcome to the account page!</p>
-        <p id="loginstatus">You are not logged in.</p>
+        <h1>Account</h1><br>
+        Welcome to the account page!
+        <div id="loginstatus">You are not logged in.</div>
         <div id="login" class="form">
           <input type="text" id="login-email" placeholder="Email">
           <input type="password" id="login-password" placeholder="Password">
@@ -437,7 +462,7 @@
         email: "None",
         uid: "guest"
       };
-      var openChat = {
+      var currentChat = {
         type: false,
         name: false
       };
@@ -610,7 +635,7 @@
                 email: document.getElementById("signup-email").value,
                 uid: u.uid
               };
-              sendMessage("Welcome, " + user.displayname + "!", { type: "group", name: "global" });
+              sendMessage("Welcome, " + user.displayname + "!", { type: "group", name: "global" }, true);
 
               // Reset sign up forms:
               document.getElementById("signup-username").value = "";
@@ -631,7 +656,7 @@
                 email: d.email,
                 uid: u.uid
               };
-              sendMessage(user.displayname + " logged in.", { type: "group", name: "global" });
+              // sendMessage(user.displayname + " logged in.", { type: "group", name: "global" }, true);
 
               // Reset login forms:
               document.getElementById("login-email").value = "";
@@ -671,22 +696,120 @@
           - to{}: { type: the type of the chat ("user" or "group"), name: the UID of the recipient/name of the group }
 
       */
-      function sendMessage(message, to) {
+      function openChat(chat) {
+        currentChat = {
+          type: chat.type,
+          name: chat.name
+        };
+        document.getElementsByClassName("content")[0].classList.add("chat-open");
+        displayChat();
+      }
+      async function displayChat() {
+        alert(JSON.stringify(await getChats(currentChat)));
+        // Display the chat
+      }
+      async function getChats(chat) {
+        var chats = [];
+        if (chat.type === "group") { // If it's a group, get all the "from" messages in that group
+          var data = await ref.chats.child("group").child(chat.name).child("from").once("value");
+          var d = data.val();
+          for (var uid in d) {
+            for (var cht in d[uid]) {
+              chats.push({
+                uid: uid,
+                message: d[uid][cht].message,
+                isAlert: d[uid][cht].isAlert,
+                time: d[uid][cht].time
+              });
+            }
+          }
+        } else { // Otherwise, if it's a user, get all the "from" messages from BOTH users
+          // Messages from CURRENT user
+          var data = await ref.chats.child("user").child(chat.name).child("from").child(user.uid).once("value");
+          var d = data.val();
+          for (var cht in d) {
+            chats.push({
+              uid: user.uid,
+              message: d[cht].message,
+              isAlert: d[cht].isAlert,
+              time: d[cht].time
+            });
+          }
+          // Messages from OTHER user
+          var data = await ref.chats.child("user").child(user.uid).child("from").child(chat.name).once("value");
+          var d = data.val();
+          for (var cht in d) {
+            chats.push({
+              uid: chat.name,
+              message: d[cht].message,
+              isAlert: d[cht].isAlert,
+              time: d[cht].time
+            });
+          }
+        }
+        quicksort(chats, 0, chats.length - 1, "time");
+        return chats;
+      }
+      function sendMessage(message, to, isAlert) {
         // Send the message:
         ref.chats.child(to.type).child(to.name).child("from").child(user.uid).push({
           message: message,
+          isAlert: isAlert || false,
           time: new Date().getTime()
         });
         // Add that to the user's "to" (if it does not exist):
         ref.chats.child("user").child(user.uid).child("to").child(to.type).child(to.name).set(true);
-        updateChats();
+        displayChat();
       }
       function updateChats() {
         ref.chats.child("user").child(user.uid).once("value", function(data) {
           var d = data.val();
-          console.log(d.to);
-          console.log(d.from);
+          // console.log(d.to);
+          // console.log(d.from);
         });
+      }
+
+      /*
+
+        QUICKSORT FUNCTIONS:
+         partition(arr, lo, hi, by)
+          = The quicksort partition function; sorts the current partition based on the given "by" value
+          - arr: the whole array
+          - lo: the low end of the array to be partitioned / sorted
+          - hi: the high end of the array to be partitioned / sorted
+          - by (optional): what the object should be sorted by; leave blank when sorting arrays
+         quicksort(arr, lo, hi, by)
+          = The quicksort function; sorts an array based on the given "by" value
+          - arr: the whole array
+          - lo: the low end of the array to be partitioned
+          - hi: the high end of the array to be partitioned
+          - by (optional): what the object should be sorted by; leave blank when sorting arrays
+
+      */
+      function partition(arr, lo, hi, by) {
+        var pivot = (by ? arr[hi][by] : arr[hi]);
+        var i = lo;
+        for (var j = lo; j < hi; j++) {
+          if ((by ? arr[j][by] : arr[j]) > pivot) {
+            if (i !== j) {
+              var t = arr[j];
+              arr[j] = arr[i];
+              arr[i] = t;
+            }
+            i++;
+          }
+        }
+        var t = arr[hi];
+        arr[hi] = arr[i];
+        arr[i] = t;
+        return i;
+      }
+      function quicksort(arr, lo, hi, by) {
+        if (lo < hi) {
+          var p = partition(arr, lo, hi, by);
+          quicksort(arr, lo, p - 1, by);
+          quicksort(arr, p + 1, hi, by);
+        }
       }
 
       /*
