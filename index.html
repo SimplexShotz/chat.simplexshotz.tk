@@ -729,7 +729,7 @@
           if (chats[i].isAlert) {
             document.getElementsByClassName("messages")[0].innerHTML += "<div style='margin: 25px 0px; color: rgb(200, 200, 200); text-align: center;'>" + chats[i].message + "</div>";
           } else {
-            document.getElementsByClassName("messages")[0].innerHTML += ((i === 0 || chats[i - 1].uid !== chats[i].uid || chats[i - 1].isAlert) ? ("<div style='font-weight: 700; margin-top: 25px;" + (chats[i].uid === user.uid ? " text-align: right;" : "") + "'>" + (users[chats[i].uid] + "</div>")) : "") + "<div" + (chats[i].uid === user.uid ? " style='text-align: right;'" : "") + ">" + chats[i].message + "</div>";
+            document.getElementsByClassName("messages")[0].innerHTML += ((i === 0 || chats[i - 1].uid !== chats[i].uid || chats[i - 1].isAlert) ? ("<div style='font-weight: 700; margin-top: 25px;" + (chats[i].uid === user.uid ? " text-align: right;" : "") + "'>" + (users[chats[i].uid] + "</div>")) : "") + "<div" + (chats[i].uid === user.uid ? " style='text-align: right;'" : "") + ">" + chats[i].message.split("<").join("&lt") + "</div>";
           }
         }
 
@@ -823,7 +823,7 @@
       }
       function sendInCurrentRoom() {
         // Display it "sending":
-        document.getElementsByClassName("messages")[0].innerHTML += (currentChat.content[currentChat.content.length - 1].uid !== user.uid ? "<div style='color: rgb(200, 200, 200); font-weight: 700; margin-top: 25px; text-align: right;'>Sending...</div>" : "") + "<div style='color: rgb(200, 200, 200); text-align: right;'>" + document.getElementsByClassName('message-input')[0].value + "</div>";
+        document.getElementsByClassName("messages")[0].innerHTML += (currentChat.content[currentChat.content.length - 1].uid !== user.uid ? "<div style='color: rgb(200, 200, 200); font-weight: 700; margin-top: 25px; text-align: right;'>Sending...</div>" : "") + "<div style='color: rgb(200, 200, 200); text-align: right;'>" + document.getElementsByClassName('message-input')[0].value.split("<").join("&lt") + "</div>";
         // Scroll to bottom
         var el = document.getElementsByClassName("messages")[0];
         el.scrollTop = el.scrollHeight - el.clientHeight;
