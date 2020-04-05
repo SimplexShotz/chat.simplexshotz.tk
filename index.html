@@ -21,8 +21,9 @@
         font-family: "Roboto";
         font-weight: 300;
       }
-      body {
+      html, body {
         background-color: rgb(255, 255, 255);
+        height: 100%;
         margin: 0px;
         padding: 0px;
         overflow: hidden;
@@ -174,7 +175,7 @@
         left: 0vw;
         background-color: rgb(250, 250, 250);
         width: calc(100vw - 50px);
-        height: calc(100vh - 150px);
+        height: calc(100% - 150px);
         padding: 25px;
         text-align: center;
         overflow: auto;
@@ -210,7 +211,7 @@
         position: absolute;
         left: 100vw;
         width: 0vw;
-        height: calc(100vh - 100px);
+        height: calc(100% - 100px);
         flex-direction: column;
         flex-grow: 1;
         transition: all 0.5s;
