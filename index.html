@@ -210,7 +210,7 @@
       .chat {
         position: absolute;
         left: 100vw;
-        width: 0vw;
+        width: 100vw;
         height: calc(100% - 100px);
         flex-direction: column;
         flex-grow: 1;
@@ -234,7 +234,6 @@
       }
       .messages {
         background-color: rgb(255, 250, 250);
-        height: 100px;
       }
       .message-input-container {
         display: flex;
@@ -349,7 +348,6 @@
       @media (min-width: 992px) {
 
         .sidebar {
-          position: relative;
           width: calc(20vw - 50px);
           box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
           z-index: 1;
@@ -363,11 +361,12 @@
         }
 
         .chat {
-          position: static;
+          left: 20vw;
           width: 80vw;
           transition: all 0.5s;
         }
         .chat-open .chat {
+          left: 20vw;
           width: 80vw;
         }
 
@@ -410,8 +409,8 @@
           <div class="messages"></div>
         </div>
         <div class="message-input-container">
-          <input class="message-input" placeholder="Message">
-          <button class="message-send" onclick="sendMessage(document.getElementsByClassName('message-input')[0].value, currentChat); document.getElementsByClassName('message-input')[0].value = '';">Send</button>
+          <input class="message-input" placeholder="Message" onkeypress="if (event.which === 13) { sendInCurrentRoom(); }">
+          <button class="message-send" onclick="sendInCurrentRoom()">Send</button>
         </div>
       </div>
     </div>
@@ -496,9 +495,13 @@
       firebase.analytics();
       var database = firebase.database();
       var ref = {
-        users: database.ref("users"),
-        chats: database.ref("chats")
+        chats: database.ref("chats"),
+        users: database.ref("users")
       };
+
+      ref.chats.on("value", function() {
+        displayChat();
+      });
 
       /*
 
@@ -706,8 +709,11 @@
         displayChat();
       }
       async function displayChat() {
-        alert(JSON.stringify(await getChats(currentChat)));
-        // Display the chat
+        var chats = await getChats(currentChat);
+        document.getElementsByClassName("messages")[0].innerHTML = "";
+        for (var i = 0; i < chats.length; i++) {
+          document.getElementsByClassName("messages")[0].innerHTML += "<div" + (chats[i].uid === user.uid ? " style='text-align: right;'" : "") + ">" + chats[i].message + "</div>";
+        }
       }
       async function getChats(chat) {
         var chats = [];
@@ -768,6 +774,15 @@
           // console.log(d.to);
           // console.log(d.from);
         });
+        if (currentChat.type && currentChat.name) {
+          displayChat();
+        }
+      }
+      function sendInCurrentRoom() {
+        // Send the message:
+        sendMessage(document.getElementsByClassName('message-input')[0].value, currentChat);
+        // Clear the message input:
+        document.getElementsByClassName('message-input')[0].value = "";
       }
 
       /*
