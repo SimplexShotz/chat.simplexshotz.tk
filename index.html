@@ -772,6 +772,9 @@
         return chats;
       }
       function sendMessage(message, to, isAlert) {
+        if (message === "") { // Don't send empty messages
+          return;
+        }
         // Send the message:
         ref.chats.child(to.type).child(to.name).child("from").child(user.uid).push({
           message: message,
