@@ -791,7 +791,7 @@
         var pivot = (by ? arr[hi][by] : arr[hi]);
         var i = lo;
         for (var j = lo; j < hi; j++) {
-          if ((by ? arr[j][by] : arr[j]) > pivot) {
+          if ((by ? arr[j][by] : arr[j]) < pivot) {
             if (i !== j) {
               var t = arr[j];
               arr[j] = arr[i];
