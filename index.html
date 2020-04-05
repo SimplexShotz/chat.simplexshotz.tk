@@ -716,9 +716,10 @@
       }
       async function displayChat() {
         var chats = await getChats(currentChat);
+        var users = await getUsers(chats);
         document.getElementsByClassName("messages")[0].innerHTML = "";
         for (var i = 0; i < chats.length; i++) {
-          document.getElementsByClassName("messages")[0].innerHTML += "<div" + (chats[i].uid === user.uid ? " style='text-align: right;'" : "") + ">" + chats[i].message + "</div>";
+          document.getElementsByClassName("messages")[0].innerHTML += "<div" + (chats[i].uid === user.uid ? " style='text-align: right;'" : "") + ">" + ((i === 0 || chats[i - 1].uid !== chats[i].uid) ? (users[chats[i].uid] + "<br>") : "") + "&nbsp&nbsp&nbsp&nbsp" + chats[i].message + "&nbsp&nbsp&nbsp&nbsp</div>";
         }
 
         if (JSON.stringify(chats) !== JSON.stringify(currentChat.content)) { // Current chat changed
@@ -770,6 +771,20 @@
         }
         quicksort(chats, 0, chats.length - 1, "time");
         return chats;
+      }
+      async function getUsers(chats) {
+        var uids = [];
+        for (var i = 0; i < chats.length; i++) { // Get all the unique UIDs
+          if (uids.indexOf(chats[i].uid) === -1) {
+            uids.push(chats[i].uid);
+          }
+        }
+        var users = {};
+        for (var i = 0; i < uids.length; i++) {
+          var data = await ref.users.child(uids[i]).child("displayname").once("value");
+          users[uids[i]] = data.val();
+        }
+        return users;
       }
       function sendMessage(message, to, isAlert) {
         if (message === "") { // Don't send empty messages
