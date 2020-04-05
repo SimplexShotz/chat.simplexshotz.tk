@@ -810,7 +810,6 @@
         });
         // Add that to the user's "to" (if it does not exist):
         ref.chats.child("user").child(user.uid).child("to").child(to.type).child(to.name).set(true);
-        displayChat();
       }
       function updateChats() {
         ref.chats.child("user").child(user.uid).once("value", function(data) {
@@ -823,6 +822,11 @@
         }
       }
       function sendInCurrentRoom() {
+        // Display it "sending":
+        document.getElementsByClassName("messages")[0].innerHTML += (currentChat.content[currentChat.content.length - 1].uid !== user.uid ? "<div style='color: rgb(200, 200, 200); font-weight: 700; margin-top: 25px; text-align: right;'>Sending...</div>" : "") + "<div style='color: rgb(200, 200, 200); text-align: right;'>" + document.getElementsByClassName('message-input')[0].value + "</div>";
+        // Scroll to bottom
+        var el = document.getElementsByClassName("messages")[0];
+        el.scrollTop = el.scrollHeight - el.clientHeight;
         // Send the message:
         sendMessage(document.getElementsByClassName('message-input')[0].value, currentChat);
         // Clear the message input:
