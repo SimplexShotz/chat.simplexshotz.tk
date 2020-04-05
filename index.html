@@ -624,7 +624,7 @@
       }
       firebase.auth().onAuthStateChanged(function(u) {
         if (u) {
-          // User is signed in.
+          // User is logged in.
           ref.users.child(u.uid).once("value", function(data) {
             var d = data.val();
             if (d === null) { // Sign Up
@@ -684,6 +684,13 @@
           // console.log(user);
           // ...
         } else {
+          // User is logged out.
+          user = {
+            username: "guest",
+            displayname: "Guest",
+            email: "None",
+            uid: "guest"
+          };
           // alert("SIGNED OUT");
           // User is signed out.
           // ...
