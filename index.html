@@ -234,7 +234,6 @@
       }
       .messages {
         display: flex;
-        background-color: rgb(250, 250, 250);
         padding: 25px 50px;
         overflow: auto;
         flex-direction: column;
@@ -783,6 +782,7 @@
             uids.push(chats[i].uid);
           }
         }
+        // Get the display name for those users
         var users = {};
         for (var i = 0; i < uids.length; i++) {
           var data = await ref.users.child(uids[i]).child("displayname").once("value");
