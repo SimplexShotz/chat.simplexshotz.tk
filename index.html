@@ -241,7 +241,7 @@
       }
       .message-input-container {
         display: flex;
-        height: calc(51px); /* 16pt of input + (10px of padding on input) * 2 + (3px of border on input) * 2 + (10px of padding on container) * 2 */
+        min-height: calc(51px); /* 16pt of input + (10px of padding on input) * 2 + (3px of border on input) * 2 + (10px of padding on container) * 2 */
         padding: 10px;
       }
       .message-input {
@@ -719,7 +719,11 @@
         var users = await getUsers(chats);
         document.getElementsByClassName("messages")[0].innerHTML = "";
         for (var i = 0; i < chats.length; i++) {
-          document.getElementsByClassName("messages")[0].innerHTML += "<div" + (chats[i].uid === user.uid ? " style='text-align: right;'" : "") + ">" + ((i === 0 || chats[i - 1].uid !== chats[i].uid) ? (users[chats[i].uid] + "<br>") : "") + "&nbsp&nbsp&nbsp&nbsp" + chats[i].message + "&nbsp&nbsp&nbsp&nbsp</div>";
+          if (chats[i].isAlert) {
+            document.getElementsByClassName("messages")[0].innerHTML += "<div style='margin: 25px 0px; color: rgb(200, 200, 200); text-align: center;'>" + chats[i].message + "</div>";
+          } else {
+            document.getElementsByClassName("messages")[0].innerHTML += ((i === 0 || chats[i - 1].uid !== chats[i].uid || chats[i - 1].isAlert) ? ("<div style='font-weight: 700; margin-top: 25px;" + (chats[i].uid === user.uid ? " text-align: right;" : "") + "'>" + (users[chats[i].uid] + "</div>")) : "") + "<div" + (chats[i].uid === user.uid ? " style='text-align: right;'" : "") + ">" + chats[i].message + "</div>";
+          }
         }
 
         if (JSON.stringify(chats) !== JSON.stringify(currentChat.content)) { // Current chat changed
